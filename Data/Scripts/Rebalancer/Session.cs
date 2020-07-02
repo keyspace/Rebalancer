@@ -1,6 +1,8 @@
 ﻿using Sandbox.Definitions;
+using Sandbox.ModAPI;
 using System.Collections.Generic;
 using System.Linq;
+using VRage.Game;
 using VRage.Game.Components;
 using VRage.Utils;
 
@@ -18,13 +20,25 @@ namespace Keyspace.Rebalancer
 
         public override void BeforeStart()
         {
+            // FIXME: try MyDefinitionManager.Static.GetAllDefinitions<MyCubeBlockDefinition>()
             var definitions = MyDefinitionManager.Static.GetAllDefinitions();
             var cubeBlockDefinitions = definitions.ToList().Where(d => d is MyCubeBlockDefinition);
 
-            MyLog.Default.WriteLineAndConsole("XXX DEFINITIONS:");
+            //MyLog.Default.WriteLineAndConsole("DEBUG DEFINITIONS:");
+            //foreach (var cbd in cubeBlockDefinitions)
+            //{
+            //    MyLog.Default.WriteLineAndConsole(cbd.DisplayNameText);
+            //}
+
+            MyLog.Default.WriteLineAndConsole("DEBUG SCANNING DEFINITIONS");
             foreach (var cbd in cubeBlockDefinitions)
             {
-                MyLog.Default.WriteLineAndConsole(cbd.DisplayNameText);
+                if (cbd.Id.TypeId.ToString() == "MyObjectBuilder_OxygenGenerator")
+                {
+                    MyLog.Default.WriteLineAndConsole("DEBUG FOUND");
+                    var og = cbd as MyOxygenGeneratorDefinition;
+                    og.OperationalPowerConsumption *= 2.0f;
+                }
             }
         }
 
